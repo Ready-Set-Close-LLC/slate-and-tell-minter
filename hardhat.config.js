@@ -74,9 +74,9 @@ module.exports = {
   },
   gasReporter: {
     currency: 'USD',
-    token: 'MATIC', //comment this out if you want ETH
+    // token: 'MATIC', //comment this out if you want ETH
     coinmarketcap: process.env.BLOCKCHAIN_CMC_KEY,
-    gasPrice: 200
+    gasPrice: 50
   },
   etherscan: {
     // Your API key for Etherscan

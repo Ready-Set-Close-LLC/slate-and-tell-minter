@@ -19,8 +19,7 @@ import "./ERC721Base.sol";
  * roles, as well as the default admin role, which will let it grant both minter
  * and pauser roles to other accounts.
  */
-contract SlateAndTell is ERC721Base
-{
+contract SlateAndTell is ERC721Base {
     /**
      * @dev Grants `DEFAULT_ADMIN_ROLE`, `MINTER_ROLE` and `PAUSER_ROLE` to the
      * account that deploys the contract.
@@ -37,7 +36,11 @@ contract SlateAndTell is ERC721Base
         _setupRole(PAUSER_ROLE, _msgSender());
     }
 
-    function mint(address to, string memory uri) external virtual onlyRole(MINTER_ROLE) {
+    function mint(address to, string memory uri)
+        external
+        virtual
+        onlyRole(MINTER_ROLE)
+    {
         _safeMint(to);
         _setTokenURI(lastId(), uri);
     }

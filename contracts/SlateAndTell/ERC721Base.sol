@@ -146,11 +146,7 @@ abstract contract ERC721Base is
      *
      * Emits a {Transfer} event.
      */
-    function _burn(uint256 tokenId)
-        internal
-        virtual
-        override(ERC721, ERC721URIStorage)
-    {
+    function _burn(uint256 tokenId) internal virtual override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
 

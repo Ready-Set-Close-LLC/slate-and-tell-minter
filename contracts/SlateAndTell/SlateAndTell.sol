@@ -41,11 +41,7 @@ contract SlateAndTell is ERC721Base, PaymentSplitter {
         _setupRole(PAUSER_ROLE, _msgSender());
     }
 
-    function mint(address to, string memory uri)
-        external
-        virtual
-        onlyRole(MINTER_ROLE)
-    {
+    function mint(address to, string memory uri) external virtual onlyRole(MINTER_ROLE) {
         _safeMint(to);
         _setTokenURI(lastId(), uri);
     }

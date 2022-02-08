@@ -27,11 +27,7 @@ import "@openzeppelin/contracts/utils/Context.sol";
 contract PaymentSplitter is Context, Ownable {
     event PayeeAdded(address account, uint256 shares);
     event PaymentReleased(address to, uint256 amount);
-    event ERC20PaymentReleased(
-        IERC20 indexed token,
-        address to,
-        uint256 amount
-    );
+    event ERC20PaymentReleased(IERC20 indexed token, address to, uint256 amount);
     event PaymentReceived(address from, uint256 amount);
     event SharesModified(address account, uint256 shares);
 
@@ -117,11 +113,7 @@ contract PaymentSplitter is Context, Ownable {
      * @dev Getter for the amount of `token` tokens already released to a payee. `token` should be the address of an
      * IERC20 contract.
      */
-    function released(IERC20 token, address account)
-        public
-        view
-        returns (uint256)
-    {
+    function released(IERC20 token, address account) public view returns (uint256) {
         return _erc20Released[token][account];
     }
 
@@ -140,11 +132,7 @@ contract PaymentSplitter is Context, Ownable {
         require(_shares[account] > 0, "PaymentSplitter: account has no shares");
 
         uint256 totalReceived = address(this).balance + totalReleased();
-        uint256 payment = _pendingPayment(
-            account,
-            totalReceived,
-            released(account)
-        );
+        uint256 payment = _pendingPayment(account, totalReceived, released(account));
 
         require(payment != 0, "PaymentSplitter: account is not due payment");
 
@@ -163,8 +151,7 @@ contract PaymentSplitter is Context, Ownable {
     function release(IERC20 token, address account) public virtual {
         require(_shares[account] > 0, "PaymentSplitter: account has no shares");
 
-        uint256 totalReceived = token.balanceOf(address(this)) +
-            totalReleased(token);
+        uint256 totalReceived = token.balanceOf(address(this)) + totalReleased(token);
         uint256 payment = _pendingPayment(
             account,
             totalReceived,
@@ -189,8 +176,7 @@ contract PaymentSplitter is Context, Ownable {
         uint256 totalReceived,
         uint256 alreadyReleased
     ) private view returns (uint256) {
-        return
-            (totalReceived * _shares[account]) / _totalShares - alreadyReleased;
+        return (totalReceived * _shares[account]) / _totalShares - alreadyReleased;
     }
 
     /**
@@ -199,15 +185,9 @@ contract PaymentSplitter is Context, Ownable {
      * @param shares_ The number of shares owned by the payee.
      */
     function _addPayee(address account, uint256 shares_) public onlyOwner {
-        require(
-            account != address(0),
-            "PaymentSplitter: account is the zero address"
-        );
+        require(account != address(0), "PaymentSplitter: account is the zero address");
         require(shares_ > 0, "PaymentSplitter: shares are 0");
-        require(
-            _shares[account] == 0,
-            "PaymentSplitter: account already has shares"
-        );
+        require(_shares[account] == 0, "PaymentSplitter: account already has shares");
 
         _payees.push(account);
         _shares[account] = shares_;
@@ -220,14 +200,8 @@ contract PaymentSplitter is Context, Ownable {
      * @param payeeIndex The index of the payee in _payees to add.
      * @param shares_ The number of shares owned by the payee.
      */
-    function modifyShares(uint256 payeeIndex, uint256 shares_)
-        public
-        onlyOwner
-    {
-        require(
-            payeeIndex < _payees.length,
-            "PaymentSplitter: the payee does not exist"
-        );
+    function modifyShares(uint256 payeeIndex, uint256 shares_) public onlyOwner {
+        require(payeeIndex < _payees.length, "PaymentSplitter: the payee does not exist");
         require(shares_ > 0, "PaymentSplitter: shares are 0");
 
         address account = _payees[payeeIndex];

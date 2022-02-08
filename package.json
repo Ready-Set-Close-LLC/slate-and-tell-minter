@@ -1,5 +1,5 @@
 {
-  "name": "gratitude-contracts",
+  "name": "slate-and-tell-minter",
   "private": true,
   "scripts": {
     "test": "hardhat test"

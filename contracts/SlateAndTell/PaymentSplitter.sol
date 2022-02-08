@@ -2,6 +2,7 @@
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
@@ -23,7 +24,7 @@ import "@openzeppelin/contracts/utils/Context.sol";
  * tokens that apply fees during transfers, are likely to not be supported as expected. If in doubt, we encourage you
  * to run tests before sending real value to this contract.
  */
-contract PaymentSplitter is Context {
+contract PaymentSplitter is Context, Ownable {
     event PayeeAdded(address account, uint256 shares);
     event PaymentReleased(address to, uint256 amount);
     event ERC20PaymentReleased(
@@ -32,6 +33,7 @@ contract PaymentSplitter is Context {
         uint256 amount
     );
     event PaymentReceived(address from, uint256 amount);
+    event SharesModified(address account, uint256 shares);
 
     uint256 private _totalShares;
     uint256 private _totalReleased;
@@ -196,7 +198,7 @@ contract PaymentSplitter is Context {
      * @param account The address of the payee to add.
      * @param shares_ The number of shares owned by the payee.
      */
-    function _addPayee(address account, uint256 shares_) private {
+    function _addPayee(address account, uint256 shares_) public onlyOwner {
         require(
             account != address(0),
             "PaymentSplitter: account is the zero address"
@@ -211,5 +213,27 @@ contract PaymentSplitter is Context {
         _shares[account] = shares_;
         _totalShares = _totalShares + shares_;
         emit PayeeAdded(account, shares_);
+    }
+
+    /**
+     * @dev Modify the shares of a payee in the contract.
+     * @param payeeIndex The index of the payee in _payees to add.
+     * @param shares_ The number of shares owned by the payee.
+     */
+    function modifyShares(uint256 payeeIndex, uint256 shares_)
+        public
+        onlyOwner
+    {
+        require(
+            payeeIndex < _payees.length,
+            "PaymentSplitter: the payee does not exist"
+        );
+        require(shares_ > 0, "PaymentSplitter: shares are 0");
+
+        address account = _payees[payeeIndex];
+        uint256 oldShares = _shares[account];
+        _shares[account] = shares_;
+        _totalShares = _totalShares - oldShares + shares_;
+        emit SharesModified(account, shares_);
     }
 }

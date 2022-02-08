@@ -38,6 +38,7 @@ function hashToken(collectionId, recipient) {
 }
 
 describe('SlateAndTell Tests', function () {
+    const address1 = '0xdbc05b1ecb4fdaef943819c0b04e9ef6df4babd6'
     before(async function () {
         const [
             contractOwner,
@@ -45,7 +46,12 @@ describe('SlateAndTell Tests', function () {
             tokenOwner2,
             tokenOwner3,
             tokenOwner4,
-        ] = await getSigners('SlateAndTell', 'http://example.com/')
+        ] = await getSigners(
+            'SlateAndTell',
+            'http://example.com/',
+            [address1],
+            [1]
+        )
 
         this.signers = {
             contractOwner,
@@ -61,5 +67,35 @@ describe('SlateAndTell Tests', function () {
         expect(await contractOwner.withContract.ownerOf(1)).to.equal(
             tokenOwner1.address
         )
+    })
+})
+
+describe('PaymentSplitter Tests', function () {
+    const address1 = '0xdbc05b1ecb4fdaef943819c0b04e9ef6df4babd6'
+    const address2 = '0x721b68fa152a930f3df71f54ac1ce7ed3ac5f867'
+    before(async function () {
+        const [
+            contractOwner,
+            tokenOwner1,
+            tokenOwner2,
+            tokenOwner3,
+            tokenOwner4,
+        ] = await getSigners('PaymentSplitter', [address1, address2], [1, 2])
+
+        this.signers = {
+            contractOwner,
+            tokenOwner1,
+            tokenOwner2,
+            tokenOwner3,
+            tokenOwner4,
+        }
+    })
+
+    it('Should modify shares', async function () {
+        const { contractOwner } = this.signers
+        expect(await contractOwner.withContract.totalShares()).to.equal(3)
+        await contractOwner.withContract.modifyShares(0, 5)
+        expect(await contractOwner.withContract.shares(address1)).to.equal(5)
+        expect(await contractOwner.withContract.totalShares()).to.equal(7)
     })
 })

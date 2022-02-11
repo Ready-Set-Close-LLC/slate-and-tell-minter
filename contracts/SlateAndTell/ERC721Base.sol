@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -17,7 +16,6 @@ import "./OpenSea/ERC721OpenSea.sol";
 
 abstract contract ERC721Base is
     Context,
-    Ownable,
     AccessControlEnumerable,
     ERC721Enumerable,
     ERC721Burnable,
@@ -30,6 +28,7 @@ abstract contract ERC721Base is
     using Counters for Counters.Counter;
 
     //all possible roles
+    bytes32 public constant ADMIN_ROLE = DEFAULT_ADMIN_ROLE;
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant CURATOR_ROLE = keccak256("CURATOR_ROLE");

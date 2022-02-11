@@ -33,20 +33,12 @@ function hashToken(collectionId, recipient) {
 
 describe("SlateAndTell Tests", function () {
     const address1 = "0xdbc05b1ecb4fdaef943819c0b04e9ef6df4babd6"
-    before(async function () {
-        const [contractOwner, tokenOwner1, tokenOwner2, tokenOwner3, tokenOwner4] =
-            await getSigners("SlateAndTell", "http://example.com/", [address1], [1])
+    async function getSatSigners() {
+        return await getSigners("SlateAndTell", "http://example.com/", [address1], [1])
+    }
 
-        this.signers = {
-            contractOwner,
-            tokenOwner1,
-            tokenOwner2,
-            tokenOwner3,
-            tokenOwner4,
-        }
-    })
     it("Should mint", async function () {
-        const { contractOwner, tokenOwner1 } = this.signers
+        const [contractOwner, tokenOwner1] = await getSatSigners()
         await contractOwner.withContract.mint(tokenOwner1.address, "lol")
         expect(await contractOwner.withContract.ownerOf(1)).to.equal(tokenOwner1.address)
     })

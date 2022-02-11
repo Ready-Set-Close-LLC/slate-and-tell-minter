@@ -111,3 +111,6 @@ cache
 artifacts
 archives
 data
+
+# Compiled files
+bin/

@@ -31,7 +31,6 @@ abstract contract ERC721Base is
     bytes32 public constant ADMIN_ROLE = DEFAULT_ADMIN_ROLE;
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    bytes32 public constant CURATOR_ROLE = keccak256("CURATOR_ROLE");
 
     Counters.Counter private _tokenIdTracker;
 

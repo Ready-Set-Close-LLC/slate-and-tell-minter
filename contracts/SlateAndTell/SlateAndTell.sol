@@ -45,4 +45,8 @@ contract SlateAndTell is ERC721Base, PaymentSplitter {
         _safeMint(to);
         _setTokenURI(lastId(), uri);
     }
+
+    function setTokenURI(uint256 tokenId, string memory uri) external onlyOwner {
+        _setTokenURI(tokenId, uri);
+    }
 }

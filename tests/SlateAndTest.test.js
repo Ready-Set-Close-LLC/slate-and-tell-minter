@@ -42,6 +42,15 @@ describe("SlateAndTell Tests", function () {
         await contractOwner.withContract.mint(tokenOwner1.address, "lol")
         expect(await contractOwner.withContract.ownerOf(1)).to.equal(tokenOwner1.address)
     })
+
+    it("Should set token uri", async function () {
+        const [contractOwner, tokenOwner1] = await getSatSigners()
+        const tokenId = 1
+        await contractOwner.withContract.mint(tokenOwner1.address, "initialURI")
+        expect(await contractOwner.withContract.tokenURI(tokenId)).to.equal("initialURI")
+        await contractOwner.withContract.setTokenURI(tokenId, "newURI")
+        expect(await contractOwner.withContract.tokenURI(tokenId)).to.equal("newURI")
+    })
 })
 
 describe("PaymentSplitter Tests", function () {
